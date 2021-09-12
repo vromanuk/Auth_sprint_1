@@ -3,6 +3,7 @@ import os
 from flask import Flask
 
 from src.database.db import init_db
+from src.routes import register_blueprints
 
 
 def create_app():
@@ -15,14 +16,6 @@ def create_app():
     init_db()
 
     return app
-
-
-def register_blueprints(app: Flask):
-    from src.resources.auth import auth_bp
-    from src.resources.smoke import smoke_bp
-
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(smoke_bp)
 
 
 def configure_logging(app: Flask):
