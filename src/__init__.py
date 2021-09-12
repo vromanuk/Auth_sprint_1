@@ -15,8 +15,10 @@ def create_app():
 
 
 def register_blueprints(app: Flask):
+    from src.resources.auth import auth_bp
     from src.resources.smoke import smoke_bp
 
+    app.register_blueprint(auth_bp)
     app.register_blueprint(smoke_bp)
 
 
