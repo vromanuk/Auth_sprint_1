@@ -22,7 +22,7 @@ class Users(MethodResource, Resource):
             updated_user = UserSchema(
                 id=current_user_id,
                 login=request.json.get("login", None),
-                password=request.json.get("password", None)
+                password=request.json.get("password", None),
             )
         except ValidationError as e:
             return {"message": str(e)}, HTTPStatus.BAD_REQUEST
