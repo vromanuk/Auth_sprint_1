@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Column, String, select
+from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 from werkzeug.security import generate_password_hash
 
@@ -19,22 +19,22 @@ class User(Base):
     )
     login = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
+    is_admin = Column(Boolean, default=False)
 
-    def __init__(self, login, password):
+    def __init__(self, login, password, is_admin=False):
         self.login = login
         self.password = generate_password_hash(password)
+        self.is_admin = is_admin
 
     def __repr__(self):
         return f"<User {self.login}>"
 
     @classmethod
     def find_by_username(cls, username: str):
-        statement = select(cls).filter_by(login=username)
         with session_scope() as session:
-            return session.execute(statement).first()
+            return session.query(cls).filter_by(login=username).first()
 
     @classmethod
     def find_by_uuid(cls, id_: UUID):
-        statement = select(cls).filter_by(id=id_)
         with session_scope() as session:
-            return session.execute(statement).first()
+            return session.query(cls).filter_by(id=id_).first()

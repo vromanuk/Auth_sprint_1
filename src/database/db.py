@@ -1,7 +1,8 @@
 from contextlib import contextmanager
 
 from sqlalchemy import MetaData, create_engine
-from sqlalchemy.orm import Session, declarative_base
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 from src.config import Config
 
@@ -19,15 +20,18 @@ metadata = MetaData(naming_convention=convention)
 
 engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, convert_unicode=True)
 Base = declarative_base(metadata=metadata)
+Session_ = sessionmaker(
+    autocommit=False, autoflush=False, bind=engine, expire_on_commit=False
+)
 
 
 @contextmanager
-def session_scope() -> Session:
-    session = Session()
+def session_scope() -> Session_:
+    session = Session_()
     try:
         yield session
         session.commit()
-    except Exception:
+    except SQLAlchemyError:
         session.rollback()
         raise
     finally:
