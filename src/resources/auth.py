@@ -1,3 +1,5 @@
+import datetime
+
 from flask import request
 from flask_apispec import MethodResource, doc
 from flask_restful import Resource
@@ -7,6 +9,7 @@ from src.database.models import User
 from src.schemas.auth import LoginSchema
 from src.schemas.users import UserCreateSchema
 from src.services.auth_service import AuthService
+from src.services.log_history_service import LogHistoryService
 
 
 class AuthRegister(MethodResource, Resource):
@@ -35,4 +38,12 @@ class AuthLogin(MethodResource, Resource):
         except ValidationError as e:
             return {"message": str(e)}
         msg, code = AuthService.login(login=login, password=password)
+
+        LogHistoryService.create_entry(
+            logged_at=datetime.datetime.utcnow(),
+            user_agent=request.user_agent.string,
+            ip=request.remote_addr,
+            user_id=msg["user_id"],
+        )
+
         return msg, code
