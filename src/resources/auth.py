@@ -11,10 +11,9 @@ class AuthRegister(Resource):
     model = User
 
     def post(self):
-        user_schema = UserCreateSchema()
         try:
             raw_user = User(**request.json)
-            user = user_schema.from_orm(raw_user)
+            user = UserCreateSchema.from_orm(raw_user)
         except ValidationError as e:
             return {"message": str(e)}
         msg, code = AuthService.register(user)
