@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 from dotenv import load_dotenv
 
@@ -14,13 +15,21 @@ class Config:
     WTF_CSRF_ENABLED = True
 
     SECRET_KEY = os.getenv("SECRET_KEY")
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+
     POSTGRES_USER = os.getenv("POSTGRES_USER")
     POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
     POSTGRES_DB = os.getenv("POSTGRES_DB")
     POSTGRES_PORT = os.getenv("POSTGRES_PORT")
     SQLALCHEMY_DATABASE_URI = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@db:{POSTGRES_PORT}/{POSTGRES_DB}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(
+        hours=int(os.getenv("JWT_ACCESS_TOKEN_EXPIRES"))
+    )
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(
+        days=int(os.getenv("JWT_REFRESH_TOKEN_EXPIRES"))
+    )
 
     if not SECRET_KEY:
         raise ValueError("No `SECRET_KEY` set for Flask application")

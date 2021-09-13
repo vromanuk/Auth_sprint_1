@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from flask import jsonify
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, create_refresh_token
 from psycopg2 import IntegrityError
 from werkzeug.security import check_password_hash
 
@@ -25,7 +25,11 @@ class AuthService:
     def login(cls, username: str, password: str):
         user = User.find_by_username(username)
         if not user or not check_password_hash(user.password, password):
-            return jsonify({"msg": "Incorrect username or password"}), 401
+            return jsonify({"msg": "Invalid Credentials."}), HTTPStatus.UNAUTHORIZED
 
         access_token = create_access_token(identity=username)
-        return jsonify(access_token=access_token)
+        refresh_token = create_refresh_token(identity=username)
+        return (
+            jsonify(access_token=access_token, refresh_token=refresh_token),
+            HTTPStatus.OK,
+        )

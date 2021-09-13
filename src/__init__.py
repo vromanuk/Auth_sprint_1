@@ -40,6 +40,8 @@ def configure_logging(app: Flask):
     app.logger.removeHandler(default_handler)
     file_handler = RotatingFileHandler("flaskapp.log", maxBytes=16384, backupCount=20)
     file_handler.setLevel(logging.INFO)
-    file_formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s [in %(filename)s: %(lineno)d]")
+    file_formatter = logging.Formatter(
+        "%(asctime)s %(levelname)s: %(message)s [in %(filename)s: %(lineno)d]"
+    )
     file_handler.setFormatter(file_formatter)
     app.logger.addHandler(file_handler)

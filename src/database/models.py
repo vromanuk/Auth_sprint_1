@@ -29,6 +29,12 @@ class User(Base):
 
     @classmethod
     def find_by_username(cls, username: str):
-        statement = select(cls).filter_by(username=username)
+        statement = select(cls).filter_by(login=username)
+        with session_scope() as session:
+            return session.execute(statement).first()
+
+    @classmethod
+    def find_by_uuid(cls, id_: UUID):
+        statement = select(cls).filter_by(id=id_)
         with session_scope() as session:
             return session.execute(statement).first()
