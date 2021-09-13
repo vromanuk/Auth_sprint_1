@@ -1,8 +1,7 @@
 from http import HTTPStatus
 
-from flask import jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token
-from psycopg2 import IntegrityError
+from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash
 
 from src.database.db import session_scope

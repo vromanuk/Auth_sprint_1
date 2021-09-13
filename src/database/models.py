@@ -10,13 +10,14 @@ from src.database.db import Base, session_scope
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4,
-        unique=True,
-        nullable=False,
-    )
+    # id = Column(
+    #     UUID(as_uuid=True),
+    #     primary_key=True,
+    #     default=uuid.uuid4,
+    #     unique=True,
+    #     nullable=False,
+    # )
+    id = Column(Integer, primary_key=True)
     login = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False)

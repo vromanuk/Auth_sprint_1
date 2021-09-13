@@ -20,6 +20,7 @@ def create_app():
     configure_logging(app)
     init_db()
     initialize_extensions(app)
+    initialize_commands(app)
 
     return app
 
@@ -28,6 +29,12 @@ def initialize_extensions(app):
     jwt.init_app(app)
     docs.init_app(app)
     swagger_init(docs)
+
+
+def initialize_commands(app):
+    from src.commands.superuser import create_superuser
+
+    app.cli.add_command(create_superuser)
 
 
 def configure_logging(app: Flask):
