@@ -12,7 +12,7 @@ class AuthRegister(Resource):
 
     def post(self):
         try:
-            raw_user = User(**request.json)
+            raw_user = self.model(**request.json)
             user = UserCreateSchema.from_orm(raw_user)
         except ValidationError as e:
             return {"message": str(e)}
