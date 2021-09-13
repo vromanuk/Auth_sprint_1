@@ -5,4 +5,4 @@ from flask_restful import Resource
 @doc(description="server health check", tags=["smoke"])
 class Smoke(MethodResource, Resource):
     def get(self):
-        return {"msg": "OK"}
+        return {"message": "OK"}
