@@ -1,5 +1,7 @@
+from contextlib import contextmanager
+
 from sqlalchemy import MetaData, create_engine
-from sqlalchemy.orm import declarative_base, scoped_session, sessionmaker
+from sqlalchemy.orm import Session, declarative_base
 
 from src.config import Config
 
@@ -14,9 +16,20 @@ convention = {
 metadata = MetaData(naming_convention=convention)
 
 engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, convert_unicode=True)
-db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 Base = declarative_base(metadata=metadata)
-Base.query = db_session.query_property()
+
+
+@contextmanager
+def session_scope() -> Session:
+    session = Session()
+    try:
+        yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
 
 
 def init_db():

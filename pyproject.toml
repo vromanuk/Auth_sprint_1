@@ -12,6 +12,7 @@ gunicorn = "^20.1.0"
 psycopg2-binary = "^2.9.1"
 SQLAlchemy = "^1.4.23"
 Flask-RESTful = "^0.3.9"
+pydantic = "^1.8.2"
 
 [tool.poetry.dev-dependencies]
 black = "^21.8b0"

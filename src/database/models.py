@@ -2,6 +2,7 @@ import uuid
 
 from sqlalchemy import Column, String
 from sqlalchemy.dialects.postgresql import UUID
+from werkzeug.security import generate_password_hash
 
 from src.database.db import Base
 
@@ -15,7 +16,7 @@ class User(Base):
 
     def __init__(self, login, password):
         self.login = login
-        self.password = password
+        self.password = generate_password_hash(password)
 
     def __repr__(self):
         return f"<User {self.login}>"
