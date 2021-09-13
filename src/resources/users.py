@@ -17,13 +17,15 @@ from src.services.users_service import UserService
 class Users(MethodResource, Resource):
     @jwt_required()
     def put(self):
+        current_user_id = get_jwt_identity()
         try:
-            new_user_info = UserSchema(**request.json)
+            updated_user = UserSchema(
+                id=current_user_id,
+                login=request.json.get("login", None),
+                password=request.json.get("password", None)
+            )
         except ValidationError as e:
             return {"message": str(e)}, HTTPStatus.BAD_REQUEST
-        current_user_id = get_jwt_identity()
-        if current_user_id != new_user_info.id:
-            return {"message": "Invalid data."}, HTTPStatus.BAD_REQUEST
 
-        msg, code = UserService.update(new_user_info)
+        msg, code = UserService.update(updated_user)
         return msg, code
