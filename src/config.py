@@ -14,6 +14,7 @@ class Config:
     WTF_CSRF_ENABLED = True
 
     SECRET_KEY = os.getenv("SECRET_KEY")
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     POSTGRES_USER = os.getenv("POSTGRES_USER")
     POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
     POSTGRES_DB = os.getenv("POSTGRES_DB")
@@ -22,7 +23,9 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     if not SECRET_KEY:
-        raise ValueError("No SECRET_KEY set for Flask application")
+        raise ValueError("No `SECRET_KEY` set for Flask application")
+    if not JWT_SECRET_KEY:
+        raise ValueError("No `JWT_SECRET_KEY` set for Flask application")
 
 
 class DevelopmentConfig(Config):

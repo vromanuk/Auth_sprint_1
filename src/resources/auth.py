@@ -18,3 +18,15 @@ class AuthRegister(Resource):
             return {"message": str(e)}
         msg, code = AuthService.register(user)
         return msg, code
+
+
+class AuthLogin(Resource):
+    def post(self):
+        auth = request.authorization
+        if not auth:
+            return (
+                "",
+                401,
+                {"WWW-Authenticate": "Basic realm='Authentication required'"},
+            )
+        return AuthService.login(username=auth.get("username", ""), password=auth.get("password", ""))

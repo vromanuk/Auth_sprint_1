@@ -1,9 +1,12 @@
 import os
 
 from flask import Flask
+from flask_jwt_extended import JWTManager
 
 from src.database.db import init_db
 from src.routes import register_blueprints
+
+jwt = JWTManager()
 
 
 def create_app():
@@ -14,8 +17,13 @@ def create_app():
     register_blueprints(app)
     configure_logging(app)
     init_db()
+    initialize_extensions(app)
 
     return app
+
+
+def initialize_extensions(app):
+    jwt.init_app(app)
 
 
 def configure_logging(app: Flask):

@@ -1,8 +1,12 @@
 from http import HTTPStatus
 
+from flask import jsonify
+from flask_jwt_extended import create_access_token
 from psycopg2 import IntegrityError
+from werkzeug.security import check_password_hash
 
 from src.database.db import session_scope
+from src.database.models import User
 
 
 class AuthService:
@@ -16,3 +20,16 @@ class AuthService:
             except IntegrityError:
                 session.rollback()
                 return {"message": "Such user exists"}, HTTPStatus.CONFLICT
+
+    @classmethod
+    def login(cls, username: str, password: str):
+        user = User.find_by_username(username)
+        if not user or not check_password_hash(user.password, password):
+            return (
+                jsonify({"msg": "Incorrect username or password"}),
+                401,
+                {"WWW-Authenticate": "Basic realm='Authentication required'"},
+            )
+
+        access_token = create_access_token(identity=username)
+        return jsonify(access_token=access_token)
