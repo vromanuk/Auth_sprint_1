@@ -23,9 +23,7 @@ class Users(MethodResource, Resource):
             return {"message": str(e)}
         current_user_id = get_jwt_identity()
         if current_user_id != new_user_info.id:
-            return {
-                "message": "Invalid data."
-            }, HTTPStatus.BAD_REQUEST
+            return {"message": "Invalid data."}, HTTPStatus.BAD_REQUEST
 
         msg, code = UserService.update(new_user_info)
         return msg, code
