@@ -31,9 +31,9 @@ class User(Base):
         return f"<User {self.login}>"
 
     @classmethod
-    def find_by_username(cls, username: str):
+    def find_by_login(cls, login: str):
         with session_scope() as session:
-            return session.query(cls).filter_by(login=username).first()
+            return session.query(cls).filter_by(login=login).first()
 
     @classmethod
     def find_by_uuid(cls, id_: UUID):

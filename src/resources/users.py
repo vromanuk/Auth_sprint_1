@@ -11,7 +11,7 @@ from src.services.users_service import UserService
 
 
 @doc(
-    description="users related view, e.g. change-password, change-username",
+    description="users related view, e.g. change-password, change-login",
     tags=["users"],
 )
 class Users(MethodResource, Resource):

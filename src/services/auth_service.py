@@ -21,8 +21,8 @@ class AuthService:
                 return {"message": "Such user exists"}, HTTPStatus.CONFLICT
 
     @classmethod
-    def login(cls, username: str, password: str):
-        user = User.find_by_username(username)
+    def login(cls, login: str, password: str):
+        user = User.find_by_login(login)
         if not user or not check_password_hash(user.password, password):
             return {"message": "Invalid Credentials."}, HTTPStatus.UNAUTHORIZED
 

@@ -16,7 +16,7 @@ from src.schemas.users import UserCreateSchema
 def create_superuser(username: str, password: str):
     with session_scope() as session:
         try:
-            raw_user = User(login=username, password=password, is_admin=True)
+            raw_user = User(login=login, password=password, is_admin=True)
             UserCreateSchema.from_orm(raw_user)
         except ValidationError:
             raise click.ClickException("Invalid arguments.")

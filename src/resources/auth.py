@@ -28,11 +28,11 @@ class AuthRegister(MethodResource, Resource):
 class AuthLogin(MethodResource, Resource):
     @doc(description="user login view", tags=["login"])
     def post(self):
-        username = request.json.get("username", None)
+        login = request.json.get("login", None)
         password = request.json.get("password", None)
         try:
-            LoginSchema(username=username, password=password)
+            LoginSchema(login=login, password=password)
         except ValidationError as e:
             return {"message": str(e)}
-        msg, code = AuthService.login(username=username, password=password)
+        msg, code = AuthService.login(login=login, password=password)
         return msg, code
