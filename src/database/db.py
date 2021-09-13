@@ -2,7 +2,7 @@ from contextlib import contextmanager
 
 from sqlalchemy import MetaData, create_engine
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
 from src.config import Config
 
@@ -26,7 +26,7 @@ Session_ = sessionmaker(
 
 
 @contextmanager
-def session_scope() -> Session_:
+def session_scope() -> Session:
     session = Session_()
     try:
         yield session
