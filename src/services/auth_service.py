@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from psycopg2 import IntegrityError
 
 from src.database.db import session_scope
@@ -10,7 +12,7 @@ class AuthService:
             try:
                 session.add(user)
                 session.commit()
-                return {"message": "Successfully registered"}, 201
+                return {"message": "Successfully registered"}, HTTPStatus.CREATED
             except IntegrityError:
                 session.rollback()
-                return {"message": "Such user exists"}, 409
+                return {"message": "Such user exists"}, HTTPStatus.CONFLICT
