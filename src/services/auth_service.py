@@ -25,11 +25,7 @@ class AuthService:
     def login(cls, username: str, password: str):
         user = User.find_by_username(username)
         if not user or not check_password_hash(user.password, password):
-            return (
-                jsonify({"msg": "Incorrect username or password"}),
-                401,
-                {"WWW-Authenticate": "Basic realm='Authentication required'"},
-            )
+            return jsonify({"msg": "Incorrect username or password"}), 401
 
         access_token = create_access_token(identity=username)
         return jsonify(access_token=access_token)
