@@ -1,12 +1,14 @@
 import os
 
 from flask import Flask
+from flask_apispec import FlaskApiSpec
 from flask_jwt_extended import JWTManager
 
 from src.database.db import init_db
-from src.routes import register_blueprints
+from src.routes import register_blueprints, swagger_init
 
 jwt = JWTManager()
+docs = FlaskApiSpec()
 
 
 def create_app():
@@ -24,6 +26,8 @@ def create_app():
 
 def initialize_extensions(app):
     jwt.init_app(app)
+    docs.init_app(app)
+    swagger_init(docs)
 
 
 def configure_logging(app: Flask):
