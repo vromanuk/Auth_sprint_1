@@ -20,7 +20,7 @@ class Users(MethodResource, Resource):
         try:
             new_user_info = UserSchema(**request.json)
         except ValidationError as e:
-            return {"message": str(e)}
+            return {"message": str(e)}, HTTPStatus.BAD_REQUEST
         current_user_id = get_jwt_identity()
         if current_user_id != new_user_info.id:
             return {"message": "Invalid data."}, HTTPStatus.BAD_REQUEST
