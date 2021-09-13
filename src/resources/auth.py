@@ -3,6 +3,7 @@ from flask_restful import Resource
 from pydantic import ValidationError
 
 from src.database.models import User
+from src.schemas.auth import LoginSchema
 from src.schemas.users import UserCreateSchema
 from src.services.auth_service import AuthService
 
@@ -22,11 +23,10 @@ class AuthRegister(Resource):
 
 class AuthLogin(Resource):
     def post(self):
-        auth = request.authorization
-        if not auth:
-            return (
-                "",
-                401,
-                {"WWW-Authenticate": "Basic realm='Authentication required'"},
-            )
-        return AuthService.login(username=auth.get("username", ""), password=auth.get("password", ""))
+        username = request.json.get("username", None)
+        password = request.json.get("password", None)
+        try:
+            LoginSchema(username=username, password=password)
+        except ValidationError as e:
+            return {"message": str(e)}
+        return AuthService.login(username=username, password=password)
