@@ -46,7 +46,7 @@ class AuthLogin(MethodResource, Resource):
             user_id=msg["user_id"],
             refresh_token=msg["refresh_token"],
             expires_at=datetime.datetime.utcnow()
-            + current_app.config.get("JWT_REFRESH_TOKEN_EXPIRES"),
+            + current_app.config["JWT_REFRESH_TOKEN_EXPIRES"],
         )
 
         return msg, code

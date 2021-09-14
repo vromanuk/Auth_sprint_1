@@ -32,9 +32,11 @@ def initialize_extensions(app):
 
 
 def initialize_commands(app):
+    from src.commands.roles import create_roles
     from src.commands.superuser import create_superuser
 
     app.cli.add_command(create_superuser)
+    app.cli.add_command(create_roles)
 
 
 def configure_logging(app: Flask):
