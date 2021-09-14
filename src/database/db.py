@@ -2,7 +2,7 @@ from contextlib import contextmanager
 
 from sqlalchemy import MetaData, create_engine
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import declarative_base, sessionmaker, Session
+from sqlalchemy.orm import Session, declarative_base, sessionmaker
 
 from src.config import Config
 

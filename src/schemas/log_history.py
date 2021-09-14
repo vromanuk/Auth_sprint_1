@@ -9,6 +9,8 @@ class LogHistorySchema(BaseModel):
     logged_at: datetime
     user_agent: str
     ip: str
+    refresh_token: str
+    expires_at: datetime
     user_id: UUID
 
     class Config:

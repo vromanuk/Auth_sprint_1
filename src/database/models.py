@@ -56,5 +56,7 @@ class LogHistory(Base):
     logged_at = Column(DateTime, nullable=False, index=True)
     user_agent = Column(String, nullable=False)
     ip = Column(String, nullable=False)
+    refresh_token = Column(String, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
     # user_id = Column(Integer, ForeignKey('users.id'))
     user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"))

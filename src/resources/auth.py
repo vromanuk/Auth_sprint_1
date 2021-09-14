@@ -1,6 +1,6 @@
 import datetime
 
-from flask import request
+from flask import current_app, request
 from flask_apispec import MethodResource, doc
 from flask_restful import Resource
 from pydantic import ValidationError
@@ -44,6 +44,9 @@ class AuthLogin(MethodResource, Resource):
             user_agent=request.user_agent.string,
             ip=request.remote_addr,
             user_id=msg["user_id"],
+            refresh_token=msg["refresh_token"],
+            expires_at=datetime.datetime.utcnow()
+            + current_app.config.get("JWT_REFRESH_TOKEN_EXPIRES"),
         )
 
         return msg, code

@@ -8,10 +8,23 @@ from src.schemas.log_history import LogHistorySchema
 
 class LogHistoryService:
     @classmethod
-    def create_entry(cls, logged_at: datetime, user_agent: str, ip: str, user_id: UUID):
+    def create_entry(
+        cls,
+        logged_at: datetime,
+        user_agent: str,
+        ip: str,
+        user_id: UUID,
+        refresh_token: str,
+        expires_at: datetime,
+    ):
         with session_scope() as session:
             log_history = LogHistory(
-                logged_at=logged_at, user_agent=user_agent, ip=ip, user_id=user_id
+                logged_at=logged_at,
+                user_agent=user_agent,
+                ip=ip,
+                user_id=user_id,
+                refresh_token=refresh_token,
+                expires_at=expires_at,
             )
             session.add(log_history)
             session.commit()
