@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash
 
 from src.database.db import session_scope
-from src.database.models import User
+from src.database.models import User, Role
 
 
 class AuthService:
@@ -13,6 +13,8 @@ class AuthService:
     def register(cls, user) -> tuple[dict, int]:
         with session_scope() as session:
             try:
+                user_role_id, _ = session.query(Role).filter_by(default=True).with_entities(Role.id).first()
+                user.role_id = user_role_id
                 session.add(user)
                 session.commit()
                 return {"message": "Successfully registered"}, HTTPStatus.CREATED
