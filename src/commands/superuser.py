@@ -13,7 +13,7 @@ from src.schemas.users import UserCreateSchema
 @click.argument("username")
 @click.argument("password")
 @with_appcontext
-def create_superuser(username: str, password: str):
+def create_superuser(login: str, password: str):
     with session_scope() as session:
         try:
             raw_user = User(login=login, password=password, is_admin=True)
