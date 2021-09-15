@@ -7,6 +7,7 @@ from pydantic import ValidationError
 
 from src.database.models import Role
 from src.schemas.roles import CreateRoleSchema, RoleSchema
+from src.services.auth_service import admin_required
 from src.services.roles_service import RoleService
 
 
@@ -17,6 +18,7 @@ class RolesResource(MethodResource, Resource):
     model = Role
     service = RoleService
 
+    @admin_required
     def get(self, role_id: int = None):
         if not role_id:
             raw_roles = self.service.fetch_all()
@@ -29,6 +31,7 @@ class RolesResource(MethodResource, Resource):
 
         return {"result": self.schema(**role).json()}, HTTPStatus.OK
 
+    @admin_required
     def post(self):
         role = self.model(**request.json)
         try:
@@ -39,6 +42,7 @@ class RolesResource(MethodResource, Resource):
         msg, code = self.service.create(role)
         return msg, code
 
+    @admin_required
     def put(self, role_id: int):
         updated_role = self.model(
             id=role_id,
@@ -54,5 +58,6 @@ class RolesResource(MethodResource, Resource):
         msg, code = self.service.update(updated_role)
         return msg, code
 
+    @admin_required
     def delete(self, role_id: int):
         return self.service.delete(role_id)
