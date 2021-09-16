@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+
+  web:
+    build: .
+    command: gunicorn -b :5000 --access-logfile - --error-logfile - wsgi:"create_app()"
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
