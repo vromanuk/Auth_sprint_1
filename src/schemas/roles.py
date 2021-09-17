@@ -1,18 +1,11 @@
-from pydantic import BaseModel
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+
+from src.database.models import Role
 
 
-class BaseRoleSchema(BaseModel):
-    name: str
-    default: bool
-    permissions: int
-
-    class Config:
-        orm_mode = True
-
-
-class CreateRoleSchema(BaseRoleSchema):
-    pass
-
-
-class RoleSchema(BaseRoleSchema):
-    id: int
+class RoleSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Role
+        exclude = ["id"]
+        load_instance = True
+        include_fk = True

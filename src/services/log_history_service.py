@@ -1,4 +1,3 @@
-from datetime import datetime
 from uuid import UUID
 
 from src.database.db import session_scope
@@ -8,34 +7,17 @@ from src.schemas.log_history import LogHistorySchema
 
 class LogHistoryService:
     @classmethod
-    def create_entry(
-        cls,
-        logged_at: datetime,
-        user_agent: str,
-        ip: str,
-        user_id: UUID,
-        refresh_token: str,
-        expires_at: datetime,
-    ):
+    def create_entry(cls, entry: dict):
         with session_scope() as session:
-            log_history = LogHistory(
-                logged_at=logged_at,
-                user_agent=user_agent,
-                ip=ip,
-                user_id=user_id,
-                refresh_token=refresh_token,
-                expires_at=expires_at,
-            )
+            log_history = LogHistorySchema().load(entry, session=session)
             session.add(log_history)
             session.commit()
 
     @classmethod
     def list_histories(cls, user_id: UUID):
+        schema = LogHistorySchema(many=True)
         with session_scope() as session:
             log_histories_raw = (
                 session.query(LogHistory).filter_by(user_id=user_id).all()
             )
-            return [
-                LogHistorySchema.from_orm(log_history).dict()
-                for log_history in log_histories_raw
-            ]
+            return schema.dump(log_histories_raw)

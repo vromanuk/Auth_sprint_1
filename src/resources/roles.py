@@ -3,39 +3,36 @@ from http import HTTPStatus
 from flask import request
 from flask_apispec import MethodResource, doc
 from flask_restful import Resource
-from pydantic import ValidationError
+from marshmallow import ValidationError
 
-from src.database.models import Role
-from src.schemas.roles import CreateRoleSchema, RoleSchema
+from src.database.db import session_scope
+from src.schemas.roles import RoleSchema
 from src.services.auth_service import admin_required
 from src.services.roles_service import RoleService
 
 
 @doc(description="CRUD for roles, only available for admin", tags=["roles"])
 class RolesResource(MethodResource, Resource):
-    schema = RoleSchema
-    create_schema = CreateRoleSchema
-    model = Role
+    schema = RoleSchema()
     service = RoleService
 
     @admin_required
     def get(self, role_id: int = None):
         if not role_id:
-            raw_roles = self.service.fetch_all()
-            roles = [self.schema(**role).json() for role in raw_roles]
-            return {"result": roles}, HTTPStatus.OK
+            roles = self.service.fetch_all()
+            return {"result": self.schema.dump(roles, many=True)}, HTTPStatus.OK
 
         role = self.service.fetch(role_id)
         if not role:
             return {"message": "not found"}, HTTPStatus.NOT_FOUND
 
-        return {"result": self.schema(**role).json()}, HTTPStatus.OK
+        return {"result": self.schema.dump(role)}, HTTPStatus.OK
 
     @admin_required
     def post(self):
-        role = self.model(**request.json)
         try:
-            self.create_schema.from_orm(role)
+            with session_scope() as session:
+                role = self.schema.load(request.json, session=session)
         except ValidationError as e:
             return {"message": str(e)}
 
@@ -46,18 +43,13 @@ class RolesResource(MethodResource, Resource):
 
     @admin_required
     def put(self, role_id: int):
-        updated_role = self.model(
-            id=role_id,
-            name=request.json.get("name"),
-            default=request.json.get("default"),
-            permissions=request.json.get("permissions"),
-        )
         try:
-            self.schema.from_orm(updated_role)
+            with session_scope() as session:
+                updated_role = self.schema.load(request.json, session=session)
         except ValidationError as e:
             return {"message": str(e)}
 
-        is_updated = self.service.update(updated_role)
+        is_updated = self.service.update(role_id, updated_role)
         if is_updated:
             return {"message": "updated"}, HTTPStatus.OK
         return {"message": "not found"}, HTTPStatus.NOT_FOUND

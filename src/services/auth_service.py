@@ -2,8 +2,12 @@ from functools import wraps
 from http import HTTPStatus
 from typing import Union
 
-from flask_jwt_extended import (create_access_token, create_refresh_token,
-                                get_jwt, verify_jwt_in_request)
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    get_jwt,
+    verify_jwt_in_request,
+)
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash
 
@@ -17,11 +21,11 @@ class AuthService:
     def register(cls, user) -> bool:
         with session_scope() as session:
             try:
-                user_role_id, _ = (
+                user_role_id = (
                     session.query(Role)
                     .filter_by(default=True)
                     .with_entities(Role.id)
-                    .first()
+                    .scalar()
                 )
                 user.role_id = user_role_id
                 session.add(user)
@@ -33,10 +37,12 @@ class AuthService:
                 return False
 
     @classmethod
-    def login(cls, login: str, password: str) -> Union[bool, tuple[bool, dict]]:
+    def login(
+        cls, login: str, password: str
+    ) -> Union[tuple[bool, None], tuple[bool, dict]]:
         user = User.find_by_login(login)
         if not user or not check_password_hash(user.password, password):
-            return False
+            return False, None
 
         additional_claims = {"perm": user.role.permissions}
         access_token = create_access_token(

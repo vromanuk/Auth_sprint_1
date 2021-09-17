@@ -4,8 +4,9 @@ from flask import request
 from flask_apispec import MethodResource, doc
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
-from pydantic import ValidationError
+from marshmallow import ValidationError
 
+from src.database.db import session_scope
 from src.schemas.users import UserSchema
 from src.services.users_service import UserService
 
@@ -19,11 +20,13 @@ class Users(MethodResource, Resource):
     def put(self):
         current_user_id = get_jwt_identity()
         try:
-            updated_user = UserSchema(
-                id=current_user_id,
-                login=request.json.get("login", None),
-                password=request.json.get("password", None),
-            )
+            data = {
+                "id": current_user_id,
+                "login": request.json.get("login", None),
+                "password": request.json.get("password", None),
+            }
+            with session_scope() as session:
+                updated_user = UserSchema().load(data, session=session)
         except ValidationError as e:
             return {"message": str(e)}, HTTPStatus.BAD_REQUEST
 

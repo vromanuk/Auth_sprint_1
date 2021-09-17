@@ -1,17 +1,10 @@
-from datetime import datetime
-from uuid import UUID
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from pydantic import BaseModel
+from src.database.models import LogHistory
 
 
-class LogHistorySchema(BaseModel):
-    id: UUID
-    logged_at: datetime
-    user_agent: str
-    ip: str
-    refresh_token: str
-    expires_at: datetime
-    user_id: UUID
-
-    class Config:
-        orm_mode = True
+class LogHistorySchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = LogHistory
+        load_instance = True
+        include_fk = True

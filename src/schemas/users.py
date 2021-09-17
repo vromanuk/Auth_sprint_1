@@ -1,19 +1,11 @@
-from uuid import UUID
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from pydantic import BaseModel
-
-
-class BaseUserSchema(BaseModel):
-    login: str
-    password: str
-
-    class Config:
-        orm_mode = True
+from src.database.models import User
 
 
-class UserSchema(BaseUserSchema):
-    id: UUID
-
-
-class UserCreateSchema(BaseUserSchema):
-    pass
+class UserSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = User
+        exclude = ("id",)
+        load_instance = True
+        load_only = ("password",)

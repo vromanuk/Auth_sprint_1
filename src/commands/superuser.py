@@ -1,12 +1,12 @@
 import click
 from flask import current_app
 from flask.cli import with_appcontext
-from pydantic import ValidationError
+from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 
 from src.database.db import session_scope
-from src.database.models import Role, User
-from src.schemas.users import UserCreateSchema
+from src.database.models import Role
+from src.schemas.users import UserSchema
 
 
 @click.command(name="create-superuser")
@@ -16,19 +16,19 @@ from src.schemas.users import UserCreateSchema
 def create_superuser(login: str, password: str):
     with session_scope() as session:
         try:
-            raw_user = User(login=login, password=password, is_admin=True)
-            UserCreateSchema.from_orm(raw_user)
+            data = {"login": login, "password": password}
+            user = UserSchema().load(data, session=session)
         except ValidationError:
             raise click.ClickException("Invalid arguments.")
         try:
-            admin_role_id, _ = (
+            admin_role_id = (
                 session.query(Role)
                 .filter_by(permissions=0xFF)
                 .with_entities(Role.id)
-                .first()
+                .scalar()
             )
-            raw_user.role_id = admin_role_id
-            session.add(raw_user)
+            user.role_id = admin_role_id
+            session.add(user)
             session.commit()
             current_app.logger.info("Superuser successfully created")
         except IntegrityError:

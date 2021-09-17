@@ -19,8 +19,8 @@ class RoleService:
         return cls.model.create(role)
 
     @classmethod
-    def update(cls, role) -> bool:
-        return cls.model.update(role)
+    def update(cls, role_id, updated_role) -> bool:
+        return cls.model.update(role_id, updated_role)
 
     @classmethod
     def delete(cls, role_id: int) -> bool:

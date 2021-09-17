@@ -16,7 +16,7 @@ class Role(Base):
     name = Column(String(64), unique=True)
     default = Column(Boolean, default=False)
     permissions = Column(Integer)
-    users = relationship("User", backref="role", lazy="dynamic")
+    users = relationship("User", back_populates="role", lazy="selectin")
 
     @classmethod
     def insert_roles(cls):
@@ -53,9 +53,9 @@ class Role(Base):
             return True
 
     @classmethod
-    def update(cls, update_role) -> bool:
+    def update(cls, role_id, update_role) -> bool:
         with session_scope() as session:
-            role = cls.fetch(update_role.id)
+            role = cls.fetch(role_id)
             if not role:
                 return False
             role.name = update_role.name
@@ -93,9 +93,9 @@ class User(Base):
     # id = Column(Integer, primary_key=True)
     login = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
-    is_admin = Column(Boolean, default=False)
     log_history = relationship("LogHistory", backref="user", lazy="dynamic")
     role_id = Column(Integer, ForeignKey("roles.id"))
+    role = relationship("Role", back_populates="users", lazy="selectin")
 
     def __init__(self, login, password, is_admin=False):
         self.login = login
@@ -111,9 +111,9 @@ class User(Base):
             return session.query(cls).filter_by(login=login).first()
 
     @classmethod
-    def find_by_uuid(cls, id_: UUID):
+    def find_by_uuid(cls, user_id: UUID):
         with session_scope() as session:
-            return session.query(cls).filter_by(id=id_).first()
+            return session.query(cls).filter_by(id=user_id).first()
 
 
 class LogHistory(Base):
