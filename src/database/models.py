@@ -124,4 +124,4 @@ class LogHistory(Base):
     refresh_token = Column(String, nullable=False)
     expires_at = Column(DateTime, nullable=False)
     # user_id = Column(Integer, ForeignKey('users.id'))
-    user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"))
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))

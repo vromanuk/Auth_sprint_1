@@ -1,4 +1,5 @@
 import os
+import pathlib
 
 from flask import Flask
 from flask_apispec import FlaskApiSpec
@@ -45,9 +46,15 @@ def configure_logging(app: Flask):
 
     from flask.logging import default_handler
 
+    basedir = pathlib.Path(__file__).parent
+    logdir = basedir.joinpath("logs")
+    if not logdir.exists():
+        logdir.mkdir()
+    logfile = logdir.joinpath("flaskapp.log")
+
     # Deactivate the default flask logger so that log messages don't get duplicated
     app.logger.removeHandler(default_handler)
-    file_handler = RotatingFileHandler("flaskapp.log", maxBytes=16384, backupCount=20)
+    file_handler = RotatingFileHandler(logfile, maxBytes=16384, backupCount=20)
     file_handler.setLevel(logging.INFO)
     file_formatter = logging.Formatter(
         "%(asctime)s %(levelname)s: %(message)s [in %(filename)s: %(lineno)d]"

@@ -1,4 +1,5 @@
 import os
+import pathlib
 from datetime import timedelta
 
 from dotenv import load_dotenv
@@ -6,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Find the absolute file path to the top level project directory
-basedir = os.path.abspath(os.path.dirname(__file__))
+basedir = pathlib.Path(__file__).parent
 
 
 class Config:
