@@ -19,6 +19,7 @@ marshmallow-sqlalchemy = "^0.26.1"
 [tool.poetry.dev-dependencies]
 black = "^21.8b0"
 isort = "^5.9.3"
+pytest = "^6.2.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
