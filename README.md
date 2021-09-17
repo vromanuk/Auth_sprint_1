@@ -1,5 +1,13 @@
-# Проектная работа 6 спринта
+# Auth service
 
-Проектная работа на первый спринт модуля Авторизацию. С этого модуля вы больше не будете получать чётко расписанное ТЗ. Требования менее фиксированные – придётся продумать архитектуру решения и декомпозировать задачи самим перед тем, как начать кодинг.
+This service is intended to be used as an entrypoint for all microservices like: **ETL** or **Async_api**
 
-Задания на спринт вы найдёте в самих темах – как было в первом модуле, где вы делали Админку.
+## How to run
+
+In order to launch the application simply enter the next docker command:
+`docker-compose up -d --build`
+
+After that you can make a server health-check via **curl**:
+```
+curl --location --request GET 'http://localhost/api/v1/smoke'
+```
