@@ -1,4 +1,5 @@
 import datetime
+from http import HTTPStatus
 
 from flask import current_app, request
 from flask_apispec import MethodResource, doc
@@ -24,8 +25,10 @@ class AuthRegister(MethodResource, Resource):
             UserCreateSchema.from_orm(raw_user)
         except ValidationError as e:
             return {"message": str(e)}
-        msg, code = AuthService.register(raw_user)
-        return msg, code
+        created = AuthService.register(raw_user)
+        if created:
+            return {"message": "Successfully registered"}, HTTPStatus.CREATED
+        return {"message": "Such user exists"}, HTTPStatus.CONFLICT
 
 
 class AuthLogin(MethodResource, Resource):
@@ -37,16 +40,18 @@ class AuthLogin(MethodResource, Resource):
             LoginSchema(login=login, password=password)
         except ValidationError as e:
             return {"message": str(e)}
-        msg, code = AuthService.login(login=login, password=password)
+        logged_in, token = AuthService.login(login=login, password=password)
+        if not logged_in:
+            return {"message": "Invalid Credentials."}, HTTPStatus.UNAUTHORIZED
 
         LogHistoryService.create_entry(
             logged_at=datetime.datetime.utcnow(),
             user_agent=request.user_agent.string,
             ip=request.remote_addr,
-            user_id=msg["user_id"],
-            refresh_token=msg["refresh_token"],
+            user_id=token["user_id"],
+            refresh_token=token["refresh_token"],
             expires_at=datetime.datetime.utcnow()
             + current_app.config["JWT_REFRESH_TOKEN_EXPIRES"],
         )
 
-        return msg, code
+        return token, HTTPStatus.OK

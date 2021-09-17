@@ -27,5 +27,7 @@ class Users(MethodResource, Resource):
         except ValidationError as e:
             return {"message": str(e)}, HTTPStatus.BAD_REQUEST
 
-        msg, code = UserService.update(updated_user)
-        return msg, code
+        is_updated = UserService.update(updated_user)
+        if is_updated:
+            return {"message": "updated"}, HTTPStatus.OK
+        return {"message": f"user not found"}, HTTPStatus.NOT_FOUND

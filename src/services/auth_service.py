@@ -1,5 +1,6 @@
 from functools import wraps
 from http import HTTPStatus
+from typing import Union
 
 from flask_jwt_extended import (create_access_token, create_refresh_token,
                                 get_jwt, verify_jwt_in_request)
@@ -13,7 +14,7 @@ from src.permissions import Permission
 
 class AuthService:
     @classmethod
-    def register(cls, user) -> tuple[dict, int]:
+    def register(cls, user) -> bool:
         with session_scope() as session:
             try:
                 user_role_id, _ = (
@@ -25,30 +26,29 @@ class AuthService:
                 user.role_id = user_role_id
                 session.add(user)
                 session.commit()
-                return {"message": "Successfully registered"}, HTTPStatus.CREATED
+                return True
+
             except IntegrityError:
                 session.rollback()
-                return {"message": "Such user exists"}, HTTPStatus.CONFLICT
+                return False
 
     @classmethod
-    def login(cls, login: str, password: str):
+    def login(cls, login: str, password: str) -> Union[bool, tuple[bool, dict]]:
         user = User.find_by_login(login)
         if not user or not check_password_hash(user.password, password):
-            return {"message": "Invalid Credentials."}, HTTPStatus.UNAUTHORIZED
+            return False
 
         additional_claims = {"perm": user.role.permissions}
         access_token = create_access_token(
             identity=user.id, additional_claims=additional_claims
         )
         refresh_token = create_refresh_token(identity=user.id)
-        return (
-            {
-                "access_token": access_token,
-                "refresh_token": refresh_token,
-                "user_id": user.id,
-            },
-            HTTPStatus.OK,
-        )
+        token = {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "user_id": user.id,
+        }
+        return True, token
 
 
 def permission_required(permission):

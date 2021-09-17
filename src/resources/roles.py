@@ -39,8 +39,10 @@ class RolesResource(MethodResource, Resource):
         except ValidationError as e:
             return {"message": str(e)}
 
-        msg, code = self.service.create(role)
-        return msg, code
+        is_created = self.service.create(role)
+        if is_created:
+            return {"message": "created"}, HTTPStatus.CREATED
+        return {"message": "something went wrong"}, HTTPStatus.BAD_REQUEST
 
     @admin_required
     def put(self, role_id: int):
@@ -55,9 +57,14 @@ class RolesResource(MethodResource, Resource):
         except ValidationError as e:
             return {"message": str(e)}
 
-        msg, code = self.service.update(updated_role)
-        return msg, code
+        is_updated = self.service.update(updated_role)
+        if is_updated:
+            return {"message": "updated"}, HTTPStatus.OK
+        return {"message": "not found"}, HTTPStatus.NOT_FOUND
 
     @admin_required
     def delete(self, role_id: int):
-        return self.service.delete(role_id)
+        is_deleted = self.service.delete(role_id)
+        if is_deleted:
+            return {"message": "deleted"}, HTTPStatus.NO_CONTENT
+        return {"message": "not found"}, HTTPStatus.NOT_FOUND

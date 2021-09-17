@@ -15,18 +15,13 @@ class RoleService:
         return cls.model.fetch_all()
 
     @classmethod
-    def create(cls, role) -> tuple[dict, int]:
-        cls.model.create(role)
-        return {"message": "created"}, HTTPStatus.CREATED
+    def create(cls, role) -> bool:
+        return cls.model.create(role)
 
     @classmethod
-    def update(cls, role) -> tuple[dict, int]:
-        cls.model.update(role)
-        return {"message": "updated"}, HTTPStatus.OK
+    def update(cls, role) -> bool:
+        return cls.model.update(role)
 
     @classmethod
-    def delete(cls, role_id: int) -> tuple[dict, int]:
-        is_deleted = cls.model.delete(role_id)
-        if is_deleted:
-            return {"message": "deleted"}, HTTPStatus.NO_CONTENT
-        return {"message": "not found"}, HTTPStatus.NOT_FOUND
+    def delete(cls, role_id: int) -> bool:
+        return cls.model.delete(role_id)

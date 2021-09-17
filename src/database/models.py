@@ -46,20 +46,26 @@ class Role(Base):
             return session.query(cls).all()
 
     @classmethod
-    def create(cls, role):
+    def create(cls, role) -> bool:
         with session_scope() as session:
             session.add(role)
             session.commit()
+            return True
 
     @classmethod
-    def update(cls, update_role):
+    def update(cls, update_role) -> bool:
         with session_scope() as session:
             role = cls.fetch(update_role.id)
+            if not role:
+                return False
             role.name = update_role.name
             role.permissions = update_role.permissions
             role.default = update_role.default
+
             session.add(role)
             session.commit()
+
+            return True
 
     @classmethod
     def delete(cls, role_id: int) -> bool:
@@ -67,8 +73,10 @@ class Role(Base):
             role = cls.fetch(role_id)
             if not role:
                 return False
+
             session.delete(role)
             session.commit()
+
             return True
 
 
