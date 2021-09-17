@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from flask import request
-from flask_apispec import MethodResource, doc
+from flask_apispec import MethodResource, doc, use_kwargs
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
 from marshmallow import ValidationError
@@ -16,6 +16,7 @@ from src.services.users_service import UserService
     tags=["users"],
 )
 class Users(MethodResource, Resource):
+    @use_kwargs(UserSchema)
     @jwt_required()
     def put(self):
         current_user_id = get_jwt_identity()

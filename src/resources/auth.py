@@ -2,7 +2,7 @@ import datetime
 from http import HTTPStatus
 
 from flask import current_app, request
-from flask_apispec import MethodResource, doc
+from flask_apispec import MethodResource, doc, use_kwargs
 from flask_restful import Resource
 from marshmallow import ValidationError
 
@@ -18,6 +18,7 @@ class AuthRegister(MethodResource, Resource):
     model = User
 
     @doc(description="user registration view", tags=["register"])
+    @use_kwargs(UserSchema)
     def post(self):
         try:
             with session_scope() as session:
@@ -32,6 +33,7 @@ class AuthRegister(MethodResource, Resource):
 
 class AuthLogin(MethodResource, Resource):
     @doc(description="user login view", tags=["login"])
+    @use_kwargs(UserSchema)
     def post(self):
         login = request.json.get("login", None)
         password = request.json.get("password", None)

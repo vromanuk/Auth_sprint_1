@@ -1,9 +1,9 @@
 from http import HTTPStatus
 
 from flask import request
-from flask_apispec import MethodResource, doc
+from flask_apispec import MethodResource, doc, use_kwargs
 from flask_restful import Resource
-from marshmallow import ValidationError
+from marshmallow import ValidationError, fields
 
 from src.database.db import session_scope
 from src.schemas.roles import RoleSchema
@@ -28,6 +28,7 @@ class RolesResource(MethodResource, Resource):
 
         return {"result": self.schema.dump(role)}, HTTPStatus.OK
 
+    @use_kwargs(RoleSchema)
     @admin_required
     def post(self):
         try:
@@ -41,6 +42,7 @@ class RolesResource(MethodResource, Resource):
             return {"message": "created"}, HTTPStatus.CREATED
         return {"message": "something went wrong"}, HTTPStatus.BAD_REQUEST
 
+    @use_kwargs(RoleSchema)
     @admin_required
     def put(self, role_id: int):
         try:
