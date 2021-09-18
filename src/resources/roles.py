@@ -3,7 +3,7 @@ from http import HTTPStatus
 from flask import request
 from flask_apispec import MethodResource, doc, use_kwargs
 from flask_restful import Resource
-from marshmallow import ValidationError, fields
+from marshmallow import ValidationError
 
 from src.database.db import session_scope
 from src.schemas.roles import RoleSchema

@@ -1,3 +1,4 @@
+import uuid
 from http import HTTPStatus
 
 import pytest
@@ -16,8 +17,8 @@ def client():
 
 @pytest.fixture
 def registered_user(client):
-    login = "testing_user_acc"
-    password = "testing_user_password"
+    login = str(uuid.uuid4())
+    password = str(uuid.uuid4())
 
     resp = register(client, login, password)
     assert resp.status_code == HTTPStatus.CREATED
