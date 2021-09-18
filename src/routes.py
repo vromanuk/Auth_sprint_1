@@ -7,7 +7,7 @@ from src.resources.jwt import TokenRefresh
 from src.resources.log_history import LogHistoryResource
 from src.resources.roles import RolesResource
 from src.resources.smoke import Smoke
-from src.resources.users import Users
+from src.resources.users import UserRole, Users
 
 
 def register_blueprints(app: Flask) -> None:
@@ -32,6 +32,12 @@ def register_blueprints(app: Flask) -> None:
 
     # Users
     api.add_resource(Users, "/users", strict_slashes=False)
+    api.add_resource(
+        UserRole,
+        "/users/<int:user_id>/role/",
+        "/users/<int:user_id>/role/<int:role_id>",
+        strict_slashes=False,
+    )
 
     app.register_blueprint(api_bp)
 
@@ -44,3 +50,4 @@ def swagger_init(docs: FlaskApiSpec):
     docs.register(TokenRefresh, endpoint="api.tokenrefresh")
     docs.register(LogHistoryResource, endpoint="api.loghistoryresource")
     docs.register(RolesResource, endpoint="api.rolesresource")
+    docs.register(UserRole, endpoint="api.userrole")

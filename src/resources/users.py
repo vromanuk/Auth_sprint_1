@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from uuid import UUID
 
 from flask import request
 from flask_apispec import MethodResource, doc, use_kwargs
@@ -8,6 +9,7 @@ from marshmallow import ValidationError
 
 from src.database.db import session_scope
 from src.schemas.users import UserSchema
+from src.services.auth_service import admin_required
 from src.services.users_service import UserService
 
 
@@ -34,4 +36,26 @@ class Users(MethodResource, Resource):
         is_updated = UserService.update(updated_user)
         if is_updated:
             return {"message": "updated"}, HTTPStatus.OK
-        return {"message": f"user not found"}, HTTPStatus.NOT_FOUND
+        return {"message": "user has not been found"}, HTTPStatus.NOT_FOUND
+
+
+@doc(
+    description="manage user role view",
+    tags=["users-roles"],
+)
+class UserRole(MethodResource, Resource):
+    @admin_required
+    def put(self, user_id: UUID, role_id: int):
+        is_role_set = UserService.update_role(user_id, role_id)
+
+        if is_role_set:
+            return {"message": "role has been set"}, HTTPStatus.OK
+        return {"message": "user or role has not been found"}, HTTPStatus.NOT_FOUND
+
+    @admin_required
+    def delete(self, user_id: UUID):
+        is_role_reset = UserService.reset_role(user_id)
+
+        if is_role_reset:
+            return {"message": "role has been reset"}, HTTPStatus.NO_CONTENT
+        return {"message": "not found"}, HTTPStatus.NOT_FOUND

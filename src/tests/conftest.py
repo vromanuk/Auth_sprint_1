@@ -2,6 +2,7 @@ import uuid
 from http import HTTPStatus
 
 import pytest
+from flask_jwt_extended import create_access_token
 
 from src import create_app
 from src.tests.src.functional.auth import register
@@ -24,3 +25,13 @@ def registered_user(client):
     assert resp.status_code == HTTPStatus.CREATED
 
     return login, password
+
+
+@pytest.fixture
+def access_token_admin(registered_user):
+    user_login, password = registered_user
+    additional_claims = {"perm": 255}
+    access_token = create_access_token(user_login, additional_claims=additional_claims)
+    headers = {"Authorization": "Bearer {}".format(access_token)}
+
+    return headers
