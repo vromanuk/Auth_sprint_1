@@ -18,7 +18,7 @@ class AuthRegister(MethodResource, Resource):
     model = User
 
     @doc(description="user registration view", tags=["register"])
-    @use_kwargs(UserSchema)
+    # @use_kwargs(UserSchema)
     def post(self):
         try:
             with session_scope() as session:
@@ -33,7 +33,7 @@ class AuthRegister(MethodResource, Resource):
 
 class AuthLogin(MethodResource, Resource):
     @doc(description="user login view", tags=["login"])
-    @use_kwargs(UserSchema)
+    # @use_kwargs(UserSchema)
     def post(self):
         login = request.json.get("login", None)
         password = request.json.get("password", None)

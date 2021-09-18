@@ -16,7 +16,7 @@ from src.services.users_service import UserService
     tags=["users"],
 )
 class Users(MethodResource, Resource):
-    @use_kwargs(UserSchema)
+    # @use_kwargs(UserSchema)
     @jwt_required()
     def put(self):
         current_user_id = get_jwt_identity()

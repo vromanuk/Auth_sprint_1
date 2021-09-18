@@ -28,7 +28,7 @@ class RolesResource(MethodResource, Resource):
 
         return {"result": self.schema.dump(role)}, HTTPStatus.OK
 
-    @use_kwargs(RoleSchema)
+    # @use_kwargs(RoleSchema)
     @admin_required
     def post(self):
         try:
@@ -42,7 +42,7 @@ class RolesResource(MethodResource, Resource):
             return {"message": "created"}, HTTPStatus.CREATED
         return {"message": "something went wrong"}, HTTPStatus.BAD_REQUEST
 
-    @use_kwargs(RoleSchema)
+    # @use_kwargs(RoleSchema)
     @admin_required
     def put(self, role_id: int):
         try:
