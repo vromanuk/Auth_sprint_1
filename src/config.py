@@ -8,6 +8,18 @@ load_dotenv()
 
 # Find the absolute file path to the top level project directory
 basedir = pathlib.Path(__file__).parent
+API_V1_STR = "/api/v1/"
+
+security_definitions = {
+    "bearer": {
+        "type": "oauth2",
+        "flow": "password",
+        "tokenUrl": f"{API_V1_STR}/login/",
+        "refreshUrl": f"{API_V1_STR}/refresh",
+    }
+}
+
+security_params = [{"bearer": []}]
 
 
 class Config:
@@ -33,6 +45,9 @@ class Config:
         days=int(os.getenv("JWT_REFRESH_TOKEN_EXPIRES", 30))
     )
     PROPAGATE_EXCEPTIONS = os.getenv("PROPAGATE_EXCEPTIONS", True)
+
+    REDIS_HOST = os.getenv("REDIS_HOST", "redis")
+    REDIS_PORT = os.getenv("REDIS_PORT", 6379)
 
     if not SECRET_KEY:
         raise ValueError("No `SECRET_KEY` set for Flask application")
