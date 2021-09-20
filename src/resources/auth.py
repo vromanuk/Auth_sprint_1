@@ -8,6 +8,7 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 
 from src import get_redis
+from src.config import security_params
 from src.database.db import session_scope
 from src.database.models import User
 from src.schemas.users import UserSchema
@@ -61,7 +62,7 @@ class AuthLogin(MethodResource, Resource):
 
 
 class AuthLogout(MethodResource, Resource):
-    @doc(description="user logout view", tags=["logout"])
+    @doc(description="user logout view", security=security_params, tags=["logout"])
     @jwt_required()
     def delete(self):
         jti = get_jwt()["jti"]

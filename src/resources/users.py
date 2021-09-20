@@ -7,6 +7,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
 from marshmallow import ValidationError
 
+from src.config import security_params
 from src.database.db import session_scope
 from src.schemas.users import UserSchema
 from src.services.auth_service import admin_required
@@ -15,6 +16,7 @@ from src.services.users_service import UserService
 
 @doc(
     description="users related view, e.g. change-password, change-login",
+    security=security_params,
     tags=["users"],
 )
 class Users(MethodResource, Resource):
@@ -41,6 +43,7 @@ class Users(MethodResource, Resource):
 
 @doc(
     description="manage user role view",
+    security=security_params,
     tags=["users-roles"],
 )
 class UserRole(MethodResource, Resource):

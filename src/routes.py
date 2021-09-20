@@ -47,6 +47,7 @@ def swagger_init(docs: FlaskApiSpec):
     docs.register(Smoke, endpoint="api.smoke")
     docs.register(AuthRegister, endpoint="api.authregister")
     docs.register(AuthLogin, endpoint="api.authlogin")
+    docs.register(AuthLogout, endpoint="api.authlogout")
     docs.register(Users, endpoint="api.users")
     docs.register(TokenRefresh, endpoint="api.tokenrefresh")
     docs.register(LogHistoryResource, endpoint="api.loghistoryresource")

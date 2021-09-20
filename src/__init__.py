@@ -2,11 +2,13 @@ import os
 import pathlib
 
 import redis
+from apispec import APISpec
+from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Flask
 from flask_apispec import FlaskApiSpec
 from flask_jwt_extended import JWTManager
 
-from src import redis_utils
+from src import config, redis_utils
 from src.database.db import init_db
 from src.redis_utils import get_redis
 from src.routes import register_blueprints, swagger_init
@@ -19,6 +21,19 @@ def create_app():
     app = Flask(__name__, instance_relative_config=True)
     cfg = os.getenv("CONFIG_TYPE", default="src.config.DevelopmentConfig")
     app.config.from_object(cfg)
+
+    app.config.update(
+        {
+            "APISPEC_SPEC": APISpec(
+                title="Auth microservice",
+                version="v1",
+                openapi_version="3.0.2",
+                plugins=[MarshmallowPlugin()],
+                securityDefinitions=config.security_definitions,
+            ),
+            "APISPEC_SWAGGER_URL": f"{config.API_V1_STR}/swagger/",
+        }
+    )
 
     register_blueprints(app)
     configure_logging(app)
@@ -69,8 +84,8 @@ def configure_logging(app: Flask) -> None:
 
 def setup_redis(app) -> None:
     redis_utils.redis = redis.StrictRedis(
-        host=app.config.get("REDIS_HOST"),
-        port=app.config.get("REDIS_PORT"),
+        host=app.config["REDIS_HOST"],
+        port=app.config["REDIS_PORT"],
         db=0,
         decode_responses=True,
     )

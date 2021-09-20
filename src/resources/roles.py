@@ -5,13 +5,18 @@ from flask_apispec import MethodResource, doc, use_kwargs
 from flask_restful import Resource
 from marshmallow import ValidationError
 
+from src.config import security_params
 from src.database.db import session_scope
 from src.schemas.roles import RoleSchema
 from src.services.auth_service import admin_required
 from src.services.roles_service import RoleService
 
 
-@doc(description="CRUD for roles, only available for admin", tags=["roles"])
+@doc(
+    description="CRUD for roles, only available for admin",
+    security=security_params,
+    tags=["roles"],
+)
 class RolesResource(MethodResource, Resource):
     schema = RoleSchema()
     service = RoleService
