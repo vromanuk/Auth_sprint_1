@@ -3,9 +3,11 @@ from http import HTTPStatus
 
 from flask import current_app, request
 from flask_apispec import MethodResource, doc, use_kwargs
+from flask_jwt_extended import get_jwt, jwt_required
 from flask_restful import Resource
 from marshmallow import ValidationError
 
+from src import get_redis
 from src.database.db import session_scope
 from src.database.models import User
 from src.schemas.users import UserSchema
@@ -56,3 +58,15 @@ class AuthLogin(MethodResource, Resource):
         LogHistoryService.create_entry(log_history_data)
 
         return token, HTTPStatus.OK
+
+
+class AuthLogout(MethodResource, Resource):
+    @doc(description="user logout view", tags=["logout"])
+    @jwt_required()
+    def delete(self):
+        jti = get_jwt()["jti"]
+        jwt_redis_blocklist = get_redis()
+        jwt_redis_blocklist.set(
+            jti, "", ex=current_app.config.get("JWT_ACCESS_TOKEN_EXPIRES")
+        )
+        return {"message": "Access token revoked"}

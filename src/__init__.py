@@ -1,11 +1,14 @@
 import os
 import pathlib
 
+import redis
 from flask import Flask
 from flask_apispec import FlaskApiSpec
 from flask_jwt_extended import JWTManager
 
+from src import redis_utils
 from src.database.db import init_db
+from src.redis_utils import get_redis
 from src.routes import register_blueprints, swagger_init
 
 jwt = JWTManager()
@@ -22,17 +25,18 @@ def create_app():
     init_db()
     initialize_extensions(app)
     initialize_commands(app)
+    setup_redis(app)
 
     return app
 
 
-def initialize_extensions(app):
+def initialize_extensions(app) -> None:
     jwt.init_app(app)
     docs.init_app(app)
     swagger_init(docs)
 
 
-def initialize_commands(app):
+def initialize_commands(app) -> None:
     from src.commands.roles import create_roles
     from src.commands.superuser import create_superuser
 
@@ -40,7 +44,7 @@ def initialize_commands(app):
     app.cli.add_command(create_roles)
 
 
-def configure_logging(app: Flask):
+def configure_logging(app: Flask) -> None:
     import logging
     from logging.handlers import RotatingFileHandler
 
@@ -61,3 +65,21 @@ def configure_logging(app: Flask):
     )
     file_handler.setFormatter(file_formatter)
     app.logger.addHandler(file_handler)
+
+
+def setup_redis(app) -> None:
+    redis_utils.redis = redis.StrictRedis(
+        host=app.config.get("REDIS_HOST"),
+        port=app.config.get("REDIS_PORT"),
+        db=0,
+        decode_responses=True,
+    )
+
+
+@jwt.token_in_blocklist_loader
+def check_if_token_is_revoked(jwt_header, jwt_payload):
+    jti = jwt_payload["jti"]
+    jwt_redis_blocklist = get_redis()
+
+    token_in_redis = jwt_redis_blocklist.get(jti)
+    return token_in_redis is not None

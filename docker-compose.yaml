@@ -1,6 +1,9 @@
 version: '3.9'
 
 services:
+  redis:
+    image: redis
+
   db:
     image: postgres:13-alpine
     volumes:
@@ -15,6 +18,7 @@ services:
       - ./.env
     depends_on:
       - db
+      - redis
 
   nginx:
     build: ./nginx

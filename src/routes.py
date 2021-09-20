@@ -2,7 +2,7 @@ from flask import Blueprint, Flask
 from flask_apispec import FlaskApiSpec
 from flask_restful import Api
 
-from src.resources.auth import AuthLogin, AuthRegister
+from src.resources.auth import AuthLogin, AuthLogout, AuthRegister
 from src.resources.jwt import TokenRefresh
 from src.resources.log_history import LogHistoryResource
 from src.resources.roles import RolesResource
@@ -17,6 +17,7 @@ def register_blueprints(app: Flask) -> None:
     # Auth
     api.add_resource(AuthRegister, "/register", strict_slashes=False)
     api.add_resource(AuthLogin, "/login", strict_slashes=False)
+    api.add_resource(AuthLogout, "/logout", strict_slashes=False)
 
     # LogHistory
     api.add_resource(LogHistoryResource, "/users/log-history", strict_slashes=False)
@@ -34,8 +35,8 @@ def register_blueprints(app: Flask) -> None:
     api.add_resource(Users, "/users", strict_slashes=False)
     api.add_resource(
         UserRole,
-        "/users/<int:user_id>/role/",
-        "/users/<int:user_id>/role/<int:role_id>",
+        "/users/<uuid:user_id>/role/",
+        "/users/<uuid:user_id>/role/<int:role_id>",
         strict_slashes=False,
     )
 
