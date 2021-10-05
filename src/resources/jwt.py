@@ -10,15 +10,15 @@ class TokenRefresh(Resource):
     @jwt_required(refresh=True)
     def post(self):
         """
-            Refresh token view.
-            ---
-            tags:
-              - token
-            security:
-                - bearerAuth: []
-            responses:
-              200:
-                description: User role has been updated.
+        Refresh token view.
+        ---
+        tags:
+          - token
+        security:
+            - bearerAuth: []
+        responses:
+          200:
+            description: User role has been updated.
         """
         identity = get_jwt_identity()
         access_token = create_access_token(identity=identity)

@@ -16,35 +16,35 @@ class Users(Resource):
     @jwt_required()
     def put(self):
         """
-            users related view, e.g. change-password, change-login
-            ---
-            tags:
-              - users
-            parameters:
-              - name: body
-                in: body
-                required: true
-                schema:
-                  id: User
-                  properties:
-                    login:
-                      type: string
-                      description: The user's name.
-                      default: "Spike"
-                    password:
-                      type: string
-                      description: The user's new password.
-                      default: "Spiegel123"
-            security:
-                - bearerAuth: []
-            responses:
-              200:
-                description: User data has been updated.
-              400:
-                description: Invalid data.
-              404:
-                description: User has not been found.
-            """
+        users related view, e.g. change-password, change-login
+        ---
+        tags:
+          - users
+        parameters:
+          - name: body
+            in: body
+            required: true
+            schema:
+              id: User
+              properties:
+                login:
+                  type: string
+                  description: The user's name.
+                  default: "Spike"
+                password:
+                  type: string
+                  description: The user's new password.
+                  default: "Spiegel123"
+        security:
+            - bearerAuth: []
+        responses:
+          200:
+            description: User data has been updated.
+          400:
+            description: Invalid data.
+          404:
+            description: User has not been found.
+        """
         current_user_id = get_jwt_identity()
         try:
             data = {
@@ -67,25 +67,25 @@ class UserRole(Resource):
     @admin_required
     def put(self, user_id: UUID, role_id: int):
         """
-            Manage user role view
-            ---
-            tags:
-              - users-roles
-            parameters:
-             - in: path
-               name: user_id
-               type: uuid
-               required: true
-               name: role_id
-               type: integer
-               required: true
-            security:
-                - bearerAuth: []
-            responses:
-              200:
-                description: User role has been updated.
-              404:
-                description: Role has not been found.
+        Manage user role view
+        ---
+        tags:
+          - users-roles
+        parameters:
+         - in: path
+           name: user_id
+           type: uuid
+           required: true
+           name: role_id
+           type: integer
+           required: true
+        security:
+            - bearerAuth: []
+        responses:
+          200:
+            description: User role has been updated.
+          404:
+            description: Role has not been found.
         """
         is_role_set = UserService.update_role(user_id, role_id)
 
@@ -96,22 +96,22 @@ class UserRole(Resource):
     @admin_required
     def delete(self, user_id: UUID):
         """
-            Remove user role view
-            ---
-            tags:
-              - users-roles
-            parameters:
-             - in: path
-               name: user_id
-               type: uuid
-               required: true
-            security:
-                - bearerAuth: []
-            responses:
-              204:
-                description: User role has been reset.
-              404:
-                description: Role has not been found.
+        Remove user role view
+        ---
+        tags:
+          - users-roles
+        parameters:
+         - in: path
+           name: user_id
+           type: uuid
+           required: true
+        security:
+            - bearerAuth: []
+        responses:
+          204:
+            description: User role has been reset.
+          404:
+            description: Role has not been found.
         """
         is_role_reset = UserService.reset_role(user_id)
 

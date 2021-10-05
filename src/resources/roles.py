@@ -17,22 +17,22 @@ class RolesResource(Resource):
     @admin_required
     def get(self, role_id: int = None):
         """
-            CRUD for roles, only available for admin
-            ---
-            tags:
-              - roles
-            parameters:
-             - in: path
-               name: role_id
-               type: integer
-               required: true
-            security:
-                - bearerAuth: []
-            responses:
-              200:
-                description: Role has been updated.
-              404:
-                description: Role has not been found.
+        CRUD for roles, only available for admin
+        ---
+        tags:
+          - roles
+        parameters:
+         - in: path
+           name: role_id
+           type: integer
+           required: true
+        security:
+            - bearerAuth: []
+        responses:
+          200:
+            description: Role has been updated.
+          404:
+            description: Role has not been found.
         """
         if not role_id:
             roles = self.service.fetch_all()
@@ -60,22 +60,22 @@ class RolesResource(Resource):
     @admin_required
     def put(self, role_id: int):
         """
-            CRUD for roles, only available for admin
-            ---
-            tags:
-              - roles
-            parameters:
-             - in: path
-               name: role_id
-               type: integer
-               required: true
-            security:
-                - bearerAuth: []
-            responses:
-              200:
-                description: Role has been updated.
-              404:
-                description: Role has not been found.
+        CRUD for roles, only available for admin
+        ---
+        tags:
+          - roles
+        parameters:
+         - in: path
+           name: role_id
+           type: integer
+           required: true
+        security:
+            - bearerAuth: []
+        responses:
+          200:
+            description: Role has been updated.
+          404:
+            description: Role has not been found.
         """
         try:
             with session_scope() as session:
@@ -91,22 +91,22 @@ class RolesResource(Resource):
     @admin_required
     def delete(self, role_id: int):
         """
-            CRUD for roles, only available for admin
-            ---
-            tags:
-              - roles
-            parameters:
-             - in: path
-               name: role_id
-               type: integer
-               required: true
-            security:
-                - bearerAuth: []
-            responses:
-              204:
-                description: Role has been deleted.
-              404:
-                description: Role has not been found.
+        CRUD for roles, only available for admin
+        ---
+        tags:
+          - roles
+        parameters:
+         - in: path
+           name: role_id
+           type: integer
+           required: true
+        security:
+            - bearerAuth: []
+        responses:
+          204:
+            description: Role has been deleted.
+          404:
+            description: Role has not been found.
         """
         is_deleted = self.service.delete(role_id)
         if is_deleted:

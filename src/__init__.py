@@ -13,17 +13,11 @@ from src.routes import register_blueprints
 
 jwt = JWTManager()
 SWAGGER_TEMPLATE = {
-    'components': {
-        'securitySchemes': {
-            'bearerAuth': {
-                'type': 'http',
-                'scheme': 'bearer',
-                'bearerFormat': 'JWT'
-            }
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
         },
-        'security': {
-            'bearerAuth': []
-        }
+        "security": {"bearerAuth": []},
     }
 }
 
@@ -35,11 +29,7 @@ def create_app():
     cfg = os.getenv("CONFIG_TYPE", default="src.config.DevelopmentConfig")
     app.config.from_object(cfg)
 
-    app.config.update({'SWAGGER': {
-        'title': 'Auth Service',
-        'openapi': '3.0.3'
-    }
-    })
+    app.config.update({"SWAGGER": {"title": "Auth Service", "openapi": "3.0.3"}})
 
     register_blueprints(app)
     configure_logging(app)

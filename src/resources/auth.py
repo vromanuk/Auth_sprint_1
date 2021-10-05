@@ -20,33 +20,33 @@ class AuthRegister(Resource):
 
     def post(self):
         """
-            User register method.
-            ---
-            tags:
-              - auth
-            consumes:
-              - application/json
-            parameters:
-            - in: body
-              name: user
-              description: The user to register.
-              schema:
-                type: object
-                required:
-                  - login
-                  - password
-                properties:
-                  login:
-                    type: string
-                  password:
-                    type: string
-            responses:
-              200:
-                description: User successfully registered.
-              400:
-                description: Invalid data.
-              409:
-                description: Such user exists.
+        User register method.
+        ---
+        tags:
+          - auth
+        consumes:
+          - application/json
+        parameters:
+        - in: body
+          name: user
+          description: The user to register.
+          schema:
+            type: object
+            required:
+              - login
+              - password
+            properties:
+              login:
+                type: string
+              password:
+                type: string
+        responses:
+          200:
+            description: User successfully registered.
+          400:
+            description: Invalid data.
+          409:
+            description: Such user exists.
         """
         try:
             with session_scope() as session:
@@ -62,31 +62,31 @@ class AuthRegister(Resource):
 class AuthLogin(Resource):
     def post(self):
         """
-            User authenticate method.
-            ---
-            tags:
-              - auth
-            consumes:
-              - application/json
-            parameters:
-            - in: body
-              name: user
-              description: The user to authenticate.
-              schema:
-                type: object
-                required:
-                  - login
-                  - password
-                properties:
-                  login:
-                    type: string
-                  password:
-                    type: string
-            responses:
-              200:
-                description: User successfully registered.
-              401:
-                description: Invalid credentials.
+        User authenticate method.
+        ---
+        tags:
+          - auth
+        consumes:
+          - application/json
+        parameters:
+        - in: body
+          name: user
+          description: The user to authenticate.
+          schema:
+            type: object
+            required:
+              - login
+              - password
+            properties:
+              login:
+                type: string
+              password:
+                type: string
+        responses:
+          200:
+            description: User successfully registered.
+          401:
+            description: Invalid credentials.
         """
         login = request.json.get("login", None)
         password = request.json.get("password", None)
@@ -115,16 +115,16 @@ class AuthLogout(Resource):
     @jwt_required()
     def delete(self):
         """
-            User logout method.
-            ---
-            tags:
-              - auth
-            description: Logout user.
-            security:
-                - bearerAuth: []
-            responses:
-              200:
-                description: User successfully logged in.
+        User logout method.
+        ---
+        tags:
+          - auth
+        description: Logout user.
+        security:
+            - bearerAuth: []
+        responses:
+          200:
+            description: User successfully logged in.
         """
         jti = get_jwt()["jti"]
         jwt_redis_blocklist = get_redis()
