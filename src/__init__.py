@@ -13,7 +13,7 @@ from src.redis_utils import get_redis
 from src.routes import register_blueprints
 
 jwt = JWTManager()
-swag = Swagger(template=SWAGGER_TEMPLATE)
+swag = Swagger(template=SWAGGER_TEMPLATE, config=config.SWAGGER_CONFIG)
 
 
 def create_app():

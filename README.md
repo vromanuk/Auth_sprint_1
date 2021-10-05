@@ -11,3 +11,7 @@ After that you can make a server health-check via **curl**:
 ```
 curl --location --request GET 'http://localhost/api/v1/smoke'
 ```
+In order to see swagger-docs, use **this endpoint**:
+```
+http://localhost/api/v1/apidocs/
+```

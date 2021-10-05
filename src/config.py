@@ -17,6 +17,21 @@ SWAGGER_TEMPLATE = {
         "security": {"bearerAuth": []},
     }
 }
+SWAGGER_CONFIG = {
+    "headers": [],
+    "specs": [
+        {
+            "endpoint": "apispec_1",
+            "route": f"{API_V1_STR}docs/apispec_1.json",
+            "rule_filter": lambda rule: True,  # all in
+            "model_filter": lambda tag: True,  # all in
+        }
+    ],
+    "static_url_path": "/flasgger_static",
+    # "static_folder": os.path.join(basedir, "static"),
+    "swagger_ui": True,
+    "specs_route": f"{API_V1_STR}apidocs/",
+}
 
 
 class Config:
