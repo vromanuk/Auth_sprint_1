@@ -1,8 +1,19 @@
-from flask_apispec import MethodResource, doc
 from flask_restful import Resource
 
 
-@doc(description="server health check", tags=["smoke"])
-class Smoke(MethodResource, Resource):
+class Smoke(Resource):
     def get(self):
+        """
+        Server health check
+        ---
+        tags:
+          - smoke
+        responses:
+          200:
+            description: health check
+            schema:
+              properties:
+                message:
+                  type: string
+        """
         return {"message": "OK"}

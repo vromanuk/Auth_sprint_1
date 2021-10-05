@@ -10,17 +10,6 @@ load_dotenv()
 basedir = pathlib.Path(__file__).parent
 API_V1_STR = "/api/v1/"
 
-security_definitions = {
-    "bearer": {
-        "type": "oauth2",
-        "flow": "password",
-        "tokenUrl": f"{API_V1_STR}/login/",
-        "refreshUrl": f"{API_V1_STR}/refresh",
-    }
-}
-
-security_params = [{"bearer": []}]
-
 
 class Config:
     DEBUG = False

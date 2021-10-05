@@ -1,5 +1,4 @@
 from flask import Blueprint, Flask
-from flask_apispec import FlaskApiSpec
 from flask_restful import Api
 
 from src.resources.auth import AuthLogin, AuthLogout, AuthRegister
@@ -41,15 +40,3 @@ def register_blueprints(app: Flask) -> None:
     )
 
     app.register_blueprint(api_bp)
-
-
-def swagger_init(docs: FlaskApiSpec):
-    docs.register(Smoke, endpoint="api.smoke")
-    docs.register(AuthRegister, endpoint="api.authregister")
-    docs.register(AuthLogin, endpoint="api.authlogin")
-    docs.register(AuthLogout, endpoint="api.authlogout")
-    docs.register(Users, endpoint="api.users")
-    docs.register(TokenRefresh, endpoint="api.tokenrefresh")
-    docs.register(LogHistoryResource, endpoint="api.loghistoryresource")
-    docs.register(RolesResource, endpoint="api.rolesresource")
-    docs.register(UserRole, endpoint="api.userrole")

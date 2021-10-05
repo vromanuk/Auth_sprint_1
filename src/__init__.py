@@ -2,19 +2,32 @@ import os
 import pathlib
 
 import redis
-from apispec import APISpec
-from apispec.ext.marshmallow import MarshmallowPlugin
+from flasgger import Swagger
 from flask import Flask
-from flask_apispec import FlaskApiSpec
 from flask_jwt_extended import JWTManager
 
 from src import config, redis_utils
 from src.database.db import init_db
 from src.redis_utils import get_redis
-from src.routes import register_blueprints, swagger_init
+from src.routes import register_blueprints
 
 jwt = JWTManager()
-docs = FlaskApiSpec()
+SWAGGER_TEMPLATE = {
+    'components': {
+        'securitySchemes': {
+            'bearerAuth': {
+                'type': 'http',
+                'scheme': 'bearer',
+                'bearerFormat': 'JWT'
+            }
+        },
+        'security': {
+            'bearerAuth': []
+        }
+    }
+}
+
+swag = Swagger(template=SWAGGER_TEMPLATE)
 
 
 def create_app():
@@ -22,22 +35,15 @@ def create_app():
     cfg = os.getenv("CONFIG_TYPE", default="src.config.DevelopmentConfig")
     app.config.from_object(cfg)
 
-    app.config.update(
-        {
-            "APISPEC_SPEC": APISpec(
-                title="Auth microservice",
-                version="v1",
-                openapi_version="3.0.2",
-                plugins=[MarshmallowPlugin()],
-                securityDefinitions=config.security_definitions,
-            ),
-            "APISPEC_SWAGGER_URL": f"{config.API_V1_STR}/swagger/",
-        }
-    )
+    app.config.update({'SWAGGER': {
+        'title': 'Auth Service',
+        'openapi': '3.0.3'
+    }
+    })
 
     register_blueprints(app)
     configure_logging(app)
-    init_db()
+    # init_db()
     initialize_extensions(app)
     initialize_commands(app)
     setup_redis(app)
@@ -47,8 +53,7 @@ def create_app():
 
 def initialize_extensions(app) -> None:
     jwt.init_app(app)
-    docs.init_app(app)
-    swagger_init(docs)
+    swag.init_app(app)
 
 
 def initialize_commands(app) -> None:
