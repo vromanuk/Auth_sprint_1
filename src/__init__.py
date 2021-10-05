@@ -25,7 +25,7 @@ def create_app():
 
     register_blueprints(app)
     configure_logging(app)
-    # init_db()
+    init_db()
     initialize_extensions(app)
     initialize_commands(app)
     setup_redis(app)
