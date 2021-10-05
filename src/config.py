@@ -9,6 +9,14 @@ load_dotenv()
 # Find the absolute file path to the top level project directory
 basedir = pathlib.Path(__file__).parent
 API_V1_STR = "/api/v1/"
+SWAGGER_TEMPLATE = {
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
+        },
+        "security": {"bearerAuth": []},
+    }
+}
 
 
 class Config:

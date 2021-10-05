@@ -7,20 +7,12 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 
 from src import config, redis_utils
+from src.config import SWAGGER_TEMPLATE
 from src.database.db import init_db
 from src.redis_utils import get_redis
 from src.routes import register_blueprints
 
 jwt = JWTManager()
-SWAGGER_TEMPLATE = {
-    "components": {
-        "securitySchemes": {
-            "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
-        },
-        "security": {"bearerAuth": []},
-    }
-}
-
 swag = Swagger(template=SWAGGER_TEMPLATE)
 
 
