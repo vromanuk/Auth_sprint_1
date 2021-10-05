@@ -11,7 +11,7 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
     apt-get update && apt-get install -y netcat
 
 # Copy using poetry.lock* in case it doesn't exist yet
-COPY --chown=auth_user:auth_user ["./pyproject.toml", "./poetry.lock*", "wsgi.py", "/src/"]
+COPY --chown=auth_user:auth_user ["./pyproject.toml", "./poetry.lock*", "patched.py", "/src/"]
 EXPOSE 5000
 
 RUN poetry install --no-root

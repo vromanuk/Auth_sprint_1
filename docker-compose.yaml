@@ -13,7 +13,8 @@ services:
 
   web:
     build: .
-    command: gunicorn -b :5000 --access-logfile - --error-logfile - wsgi:"create_app()"
+    command: gunicorn --worker-class gevent -b :5000 --access-logfile - --error-logfile - patched:"create_app()"
+#    command: gunicorn -b :5000 --access-logfile - --error-logfile - wsgi:"create_app()"
     env_file:
       - ./.env
     depends_on:
