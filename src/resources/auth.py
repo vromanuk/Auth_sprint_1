@@ -2,7 +2,7 @@ import datetime
 from http import HTTPStatus
 
 from flask import current_app, request
-from flask_jwt_extended import get_jwt, jwt_required
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from flask_restful import Resource
 from marshmallow import ValidationError
 
@@ -127,8 +127,11 @@ class AuthLogout(Resource):
             description: User successfully logged in.
         """
         jti = get_jwt()["jti"]
+        current_user_id = get_jwt_identity()
         jwt_redis_blocklist = get_redis()
         jwt_redis_blocklist.set(
-            jti, "", ex=current_app.config.get("JWT_ACCESS_TOKEN_EXPIRES")
+            f"{current_user_id}:{jti}:{request.user_agent.string}",
+            "",
+            ex=current_app.config.get("JWT_ACCESS_TOKEN_EXPIRES"),
         )
         return {"message": "Access token revoked"}, HTTPStatus.OK

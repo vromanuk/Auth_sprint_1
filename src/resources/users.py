@@ -48,7 +48,6 @@ class Users(Resource):
         current_user_id = get_jwt_identity()
         try:
             data = {
-                "id": current_user_id,
                 "login": request.json.get("login", None),
                 "password": request.json.get("password", None),
             }
@@ -57,8 +56,10 @@ class Users(Resource):
         except ValidationError as e:
             return {"message": str(e)}, HTTPStatus.BAD_REQUEST
 
-        is_updated = UserService.update(updated_user)
+        is_updated = UserService.update(current_user_id, updated_user)
         if is_updated:
+            if data["password"]:
+                UserService.reset_active_tokens(current_user_id)
             return {"message": "updated"}, HTTPStatus.OK
         return {"message": "user has not been found"}, HTTPStatus.NOT_FOUND
 

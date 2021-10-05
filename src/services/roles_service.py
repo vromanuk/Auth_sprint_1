@@ -1,5 +1,3 @@
-from http import HTTPStatus
-
 from src.database.models import Role
 
 

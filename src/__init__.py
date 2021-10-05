@@ -1,5 +1,6 @@
 import os
 import pathlib
+from datetime import datetime as dt
 
 import redis
 from flasgger import Swagger
@@ -80,8 +81,18 @@ def setup_redis(app) -> None:
 
 @jwt.token_in_blocklist_loader
 def check_if_token_is_revoked(jwt_header, jwt_payload):
-    jti = jwt_payload["jti"]
     jwt_redis_blocklist = get_redis()
+    logged_in_after_changing_password = False
+    jti = jwt_payload["jti"]
+    issued_at = dt.fromtimestamp(jwt_payload["iat"])
+    current_user_id = jwt_payload["sub"]
+    redis_key = f"{current_user_id}:{jti}"
+    changed_password_key = f"{current_user_id}:changed-password"
 
-    token_in_redis = jwt_redis_blocklist.get(jti)
-    return token_in_redis is not None
+    token_in_redis = jwt_redis_blocklist.get(redis_key)
+    has_changed_password = jwt_redis_blocklist.get(changed_password_key)
+    if has_changed_password:
+        changed_password_at = dt.strptime(has_changed_password, "%Y-%m-%d %H:%M:%S.%f")
+        logged_in_after_changing_password = issued_at < changed_password_at
+
+    return token_in_redis is not None or logged_in_after_changing_password
